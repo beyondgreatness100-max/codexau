@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codexau | Digital Excellence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { 400: '#C6A962', 500: '#B8956F' },
+                        dark: { 900: '#0a0a0a', 800: '#111111', 700: '#1a1a1a', 600: '#222222' }
+                    },
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: rgba(198, 169, 98, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(198, 169, 98, 0.5); }
+
+        /* Selection */
+        ::selection { background: rgba(198, 169, 98, 0.3); }
+
+        /* 3D Canvas */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Gradient Overlays */
+        .gradient-overlay {
+            background: linear-gradient(180deg, 
+                rgba(10,10,10,0) 0%, 
+                rgba(10,10,10,0.5) 50%,
+                rgba(10,10,10,1) 100%
+            );
+        }
+
+        /* Text Gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #C6A962 0%, #E8DCC4 50%, #C6A962 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glow Effects */
+        .glow-gold {
+            box-shadow: 0 0 60px rgba(198, 169, 98, 0.15);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 40px rgba(198, 169, 98, 0.3);
+        }
+
+        /* Glass Card */
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-hover {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-hover:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(198, 169, 98, 0.2);
+            transform: translateY(-4px);
+        }
+
+        /* Smooth Reveals */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(60px);
+        }
+
+        .reveal-fade {
+            opacity: 0;
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        /* Navigation */
+        .nav-blur {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .nav-link {
+            position: relative;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover { color: #ffffff; }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #C6A962, transparent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after { width: 100%; }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #C6A962 0%, #B8956F 100%);
+            color: #0a0a0a;
+            font-weight: 500;
+            padding: 14px 32px;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before { left: 100%; }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(198, 169, 98, 0.3);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 14px 32px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            border-color: rgba(198, 169, 98, 0.5);
+            background: rgba(198, 169, 98, 0.1);
+        }
+
+        /* Stats Counter */
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(198, 169, 98, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        /* Video Thumbnail */
+        .video-thumb {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .video-thumb img {
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-thumb:hover img {
+            transform: scale(1.05);
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .play-button:hover {
+            background: rgba(198, 169, 98, 0.2);
+            border-color: rgba(198, 169, 98, 0.5);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .play-button svg {
+            width: 24px;
+            height: 24px;
+            margin-left: 4px;
+            fill: #ffffff;
+        }
+
+        /* Horizontal Scroll Section */
+        .horizontal-scroll {
+            display: flex;
+            gap: 24px;
+        }
+
+        /* Floating Elements */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float { animation: float 6s ease-in-out infinite; }
+        .float-delay { animation: float 6s ease-in-out infinite; animation-delay: -3s; }
+
+        /* Marquee */
+        .marquee {
+            display: flex;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .marquee-content {
+            display: flex;
+            animation: marquee 30s linear infinite;
+        }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* Line Animation */
+        .line-reveal {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(198, 169, 98, 0.5), transparent);
+        }
+
+        /* Cursor */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: #C6A962;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(198, 169, 98, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none; }
+        }
+
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0a;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loader-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #C6A962, #E8DCC4);
+            width: 0;
+        }
+
+        /* Section Padding */
+        .section-padding {
+            padding: 160px 0;
+        }
+
+        @media (max-width: 768px) {
+            .section-padding { padding: 80px 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="text-center">
+            <div class="text-sm tracking-[0.3em] text-white/40 mb-6">CODEXAU</div>
+            <div class="loader-bar">
+                <div class="loader-progress" id="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold-400 to-gold-500 flex items-center justify-center">
+                        <span class="font-display text-dark-900 text-xl font-semibold">C</span>
+                    </div>
+                    <span class="font-display text-xl tracking-wide">Codexau</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden lg:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide">Home</a>
+                    <a href="services.html" class="nav-link text-sm tracking-wide">Services</a>
+                    <a href="portfolio.html" class="nav-link text-sm tracking-wide">Work</a>
+                    <a href="about.html" class="nav-link text-sm tracking-wide">About</a>
+                    <a href="contact.html" class="btn-primary text-sm tracking-wide">Get Started</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="lg:hidden text-white p-2" id="mobile-menu-btn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="lg:hidden hidden bg-dark-900/95 backdrop-blur-xl border-t border-white/5" id="mobile-menu">
+            <div class="px-6 py-8 space-y-6">
+                <a href="index.html" class="block text-lg text-white/80 hover:text-white transition-colors">Home</a>
+                <a href="services.html" class="block text-lg text-white/80 hover:text-white transition-colors">Services</a>
+                <a href="portfolio.html" class="block text-lg text-white/80 hover:text-white transition-colors">Work</a>
+                <a href="about.html" class="block text-lg text-white/80 hover:text-white transition-colors">About</a>
+                <a href="contact.html" class="btn-primary inline-block text-center w-full">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- 3D Background -->
+        <canvas id="hero-canvas"></canvas>
+        
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 gradient-overlay z-10"></div>
+
+        <!-- Content -->
+        <div class="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 pt-20">
+            <div class="text-center max-w-4xl mx-auto">
+                <!-- Badge -->
+                <div class="reveal-up inline-flex items-center space-x-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-sm text-white/60">Now accepting new projects for Q1 2026</span>
+                </div>
+
+                <!-- Headline -->
+                <h1 class="reveal-up font-display text-5xl md:text-7xl lg:text-8xl font-medium leading-[1.1] mb-8">
+                    We build
+                    <span class="text-gradient">digital products</span>
+                    that scale
+                </h1>
+
+                <!-- Subheadline -->
+                <p class="reveal-up text-lg md:text-xl text-white/50 leading-relaxed max-w-2xl mx-auto mb-12">
+                    Performance marketing, mobile apps, and web platforms engineered for growth. 
+                    We turn ambitious ideas into market-leading products.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="reveal-up flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="contact.html" class="btn-primary">
+                        Start a Project
+                        <svg class="inline-block w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                    <a href="portfolio.html" class="btn-outline">View Our Work</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 reveal-fade">
+            <div class="flex flex-col items-center space-y-4">
+                <span class="text-xs tracking-[0.2em] text-white/30 uppercase">Scroll</span>
+                <div class="w-px h-16 bg-gradient-to-b from-white/20 to-transparent"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="relative z-10 -mt-20">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="glass glow-gold rounded-2xl p-8 md:p-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+                    <div class="text-center reveal-scale">
+                        <div class="stat-number text-4xl md:text-5xl font-display text-gradient mb-2" data-value="150">0</div>
+                        <div class="text-sm text-white/40">Projects Delivered</div>
+                    </div>
+                    <div class="text-center reveal-scale">
+                        <div class="stat-number text-4xl md:text-5xl font-display text-gradient mb-2" data-value="94">0</div>
+                        <div class="text-sm text-white/40">Client Satisfaction %</div>
+                    </div>
+                    <div class="text-center reveal-scale">
+                        <div class="stat-number text-4xl md:text-5xl font-display text-gradient mb-2" data-value="12">0</div>
+                        <div class="text-sm text-white/40">Industries Served</div>
+                    </div>
+                    <div class="text-center reveal-scale">
+                        <div class="stat-number text-4xl md:text-5xl font-display text-gradient mb-2" data-value="8">0</div>
+                        <div class="text-sm text-white/40">Years Experience</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section-padding">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="max-w-3xl mb-20">
+                <div class="reveal-up flex items-center space-x-4 mb-6">
+                    <div class="line-reveal w-12"></div>
+                    <span class="text-sm tracking-[0.2em] text-gold-400 uppercase">Services</span>
+                </div>
+                <h2 class="reveal-up font-display text-4xl md:text-5xl lg:text-6xl font-medium leading-tight mb-6">
+                    End-to-end digital solutions
+                </h2>
+                <p class="reveal-up text-lg text-white/40 leading-relaxed">
+                    From strategy to execution, we provide comprehensive services that drive measurable growth.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Service 1 -->
+                <div class="reveal-up feature-card glass glass-hover rounded-xl p-8 lg:p-10">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-gold-400/20 to-transparent flex items-center justify-center mb-8">
+                        <svg class="w-7 h-7 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl mb-4">Performance Marketing</h3>
+                    <p class="text-white/40 leading-relaxed mb-6">
+                        Data-driven campaigns across Google, Meta, and TikTok with advanced tracking and attribution.
+                    </p>
+                    <a href="services.html" class="inline-flex items-center text-gold-400 text-sm group">
+                        Learn more
+                        <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="reveal-up feature-card glass glass-hover rounded-xl p-8 lg:p-10">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-gold-400/20 to-transparent flex items-center justify-center mb-8">
+                        <svg class="w-7 h-7 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl mb-4">App Development</h3>
+                    <p class="text-white/40 leading-relaxed mb-6">
+                        Native and cross-platform mobile applications built for performance and user engagement.
+                    </p>
+                    <a href="services.html" class="inline-flex items-center text-gold-400 text-sm group">
+                        Learn more
+                        <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="reveal-up feature-card glass glass-hover rounded-xl p-8 lg:p-10">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-gold-400/20 to-transparent flex items-center justify-center mb-8">
+                        <svg class="w-7 h-7 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl mb-4">Web Development</h3>
+                    <p class="text-white/40 leading-relaxed mb-6">
+                        High-converting websites and web applications with premium design and optimal performance.
+                    </p>
+                    <a href="services.html" class="inline-flex items-center text-gold-400 text-sm group">
+                        Learn more
+                        <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- View All Services -->
+            <div class="reveal-up text-center mt-16">
+                <a href="services.html" class="btn-outline inline-flex items-center">
+                    View All Services
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Work Section -->
+    <section class="section-padding bg-dark-800/50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
+                <div class="max-w-2xl">
+                    <div class="reveal-up flex items-center space-x-4 mb-6">
+                        <div class="line-reveal w-12"></div>
+                        <span class="text-sm tracking-[0.2em] text-gold-400 uppercase">Selected Work</span>
+                    </div>
+                    <h2 class="reveal-up font-display text-4xl md:text-5xl lg:text-6xl font-medium leading-tight">
+                        Projects that drive results
+                    </h2>
+                </div>
+                <div class="reveal-up">
+                    <a href="portfolio.html" class="inline-flex items-center text-white/60 hover:text-white transition-colors group">
+                        View all projects
+                        <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Project 1 -->
+                <div class="reveal-up group">
+                    <div class="video-thumb aspect-[4/3] bg-dark-700 mb-6 cursor-pointer" data-video="project1">
+                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop" alt="Project" class="w-full h-full object-cover opacity-80">
+                        <div class="play-button">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-xs text-white/60 mb-3">E-Commerce</span>
+                            <h3 class="font-display text-2xl">Luxe Commerce</h3>
+                        </div>
+                    </div>
+                    <p class="text-white/40 leading-relaxed">Premium Shopify Plus build with advanced tracking infrastructure and conversion optimization.</p>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="reveal-up group">
+                    <div class="video-thumb aspect-[4/3] bg-dark-700 mb-6 cursor-pointer" data-video="project2">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop" alt="Project" class="w-full h-full object-cover opacity-80">
+                        <div class="play-button">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-xs text-white/60 mb-3">SaaS</span>
+                            <h3 class="font-display text-2xl">DataForge Pro</h3>
+                        </div>
+                    </div>
+                    <p class="text-white/40 leading-relaxed">B2B analytics platform with custom attribution modeling and real-time dashboards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="section-padding">
+        <div class="max-w-5xl mx-auto px-6 lg:px-8">
+            <div class="reveal-up text-center">
+                <div class="flex items-center justify-center space-x-4 mb-12">
+                    <div class="line-reveal w-12"></div>
+                    <span class="text-sm tracking-[0.2em] text-gold-400 uppercase">Testimonials</span>
+                    <div class="line-reveal w-12"></div>
+                </div>
+                
+                <blockquote class="font-display text-3xl md:text-4xl lg:text-5xl font-medium leading-snug mb-12">
+                    "Codexau transformed our digital presence. Their technical expertise and strategic thinking 
+                    <span class="text-gradient">exceeded our expectations</span> at every turn."
+                </blockquote>
+
+                <div class="flex items-center justify-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-gold-400/30 to-gold-500/30 flex items-center justify-center">
+                        <span class="font-display text-gold-400 text-lg">JM</span>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-medium">James Mitchell</div>
+                        <div class="text-sm text-white/40">CEO, TechVentures</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Marquee -->
+    <section class="py-16 border-y border-white/5 overflow-hidden">
+        <div class="marquee">
+            <div class="marquee-content">
+                <span class="mx-12 text-2xl font-display text-white/10">Google Ads</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Meta Ads</span>
+                <span class="mx-12 text-2xl font-display text-white/10">TikTok</span>
+                <span class="mx-12 text-2xl font-display text-white/10">React Native</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Swift</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Kotlin</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Next.js</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Shopify Plus</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Google Ads</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Meta Ads</span>
+                <span class="mx-12 text-2xl font-display text-white/10">TikTok</span>
+                <span class="mx-12 text-2xl font-display text-white/10">React Native</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Swift</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Kotlin</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Next.js</span>
+                <span class="mx-12 text-2xl font-display text-white/10">Shopify Plus</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section-padding">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="reveal-up glass glow-gold rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-20 bg-gradient-to-b from-gold-400/50 to-transparent"></div>
+                
+                <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-medium leading-tight mb-6">
+                    Ready to build something extraordinary?
+                </h2>
+                <p class="text-lg text-white/40 leading-relaxed max-w-2xl mx-auto mb-10">
+                    Let's discuss your vision and explore how we can bring it to life.
+                </p>
+                <a href="contact.html" class="btn-primary inline-flex items-center text-lg">
+                    Start a Conversation
+                    <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-20">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <!-- Brand -->
+                <div class="lg:col-span-2">
+                    <a href="index.html" class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold-400 to-gold-500 flex items-center justify-center">
+                            <span class="font-display text-dark-900 text-xl font-semibold">C</span>
+                        </div>
+                        <span class="font-display text-xl tracking-wide">Codexau</span>
+                    </a>
+                    <p class="text-white/40 leading-relaxed max-w-sm mb-6">
+                        Building digital products that scale. Performance marketing, mobile apps, and web platforms.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-gold-400 hover:border-gold-400/30 transition-all">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"/></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-gold-400 hover:border-gold-400/30 transition-all">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-gold-400 hover:border-gold-400/30 transition-all">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="font-medium mb-6">Navigation</h4>
+                    <ul class="space-y-4">
+                        <li><a href="index.html" class="text-white/40 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="services.html" class="text-white/40 hover:text-white transition-colors">Services</a></li>
+                        <li><a href="portfolio.html" class="text-white/40 hover:text-white transition-colors">Work</a></li>
+                        <li><a href="about.html" class="text-white/40 hover:text-white transition-colors">About</a></li>
+                        <li><a href="contact.html" class="text-white/40 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="font-medium mb-6">Contact</h4>
+                    <ul class="space-y-4">
+                        <li><a href="/cdn-cgi/l/email-protection#3a525f5656557a59555e5f425b4f14595557" class="text-white/40 hover:text-gold-400 transition-colors"><span class="__cf_email__" data-cfemail="a3cbc6cfcfcce3c0ccc7c6dbc2d68dc0ccce">[email&#160;protected]</span></a></li>
+                        <li><span class="text-white/40">Dubai, UAE</span></li>
+                        <li><span class="text-white/40">Global Remote</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-white/30">&copy; 2024 Codexau. All rights reserved.</p>
+                <div class="flex space-x-8">
+                    <a href="#" class="text-sm text-white/30 hover:text-white/60 transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-sm text-white/30 hover:text-white/60 transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div class="fixed inset-0 z-[100] hidden" id="video-modal">
+        <div class="absolute inset-0 bg-dark-900/95 backdrop-blur-xl" id="modal-backdrop"></div>
+        <div class="relative h-full flex items-center justify-center p-8">
+            <button class="absolute top-8 right-8 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:border-gold-400 hover:text-gold-400 transition-all" id="close-modal">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="w-full max-w-5xl aspect-video bg-dark-700 rounded-xl overflow-hidden">
+                <div id="video-container" class="w-full h-full flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="w-20 h-20 rounded-full bg-gold-400/10 flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-white/40">Add video URL to data-src attribute</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Loading Screen
+        const loader = document.getElementById('loader');
+        const loaderProgress = document.getElementById('loader-progress');
+        
+        gsap.to(loaderProgress, {
+            width: '100%',
+            duration: 1.5,
+            ease: 'power2.inOut',
+            onComplete: () => {
+                gsap.to(loader, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => {
+                        loader.style.display = 'none';
+                        initAnimations();
+                    }
+                });
+            }
+        });
+
+        // Custom Cursor
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursorDot, { x: e.clientX - 4, y: e.clientY - 4, duration: 0.1 });
+            gsap.to(cursorOutline, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.3 });
+        });
+
+        // Cursor hover effects
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(cursorOutline, { scale: 1.5, borderColor: 'rgba(198, 169, 98, 0.8)' });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(cursorOutline, { scale: 1, borderColor: 'rgba(198, 169, 98, 0.5)' });
+            });
+        });
+
+        // Initialize Animations
+        function initAnimations() {
+            // Reveal Up
+            gsap.utils.toArray('.reveal-up').forEach(el => {
+                gsap.to(el, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+            });
+
+            // Reveal Fade
+            gsap.utils.toArray('.reveal-fade').forEach(el => {
+                gsap.to(el, {
+                    opacity: 1,
+                    duration: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%'
+                    }
+                });
+            });
+
+            // Reveal Scale
+            gsap.utils.toArray('.reveal-scale').forEach(el => {
+                gsap.to(el, {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: 'back.out(1.7)',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%'
+                    }
+                });
+            });
+
+            // Line Reveals
+            gsap.utils.toArray('.line-reveal').forEach(el => {
+                gsap.to(el, {
+                    width: '48px',
+                    duration: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%'
+                    }
+                });
+            });
+
+            // Stats Counter
+            gsap.utils.toArray('.stat-number').forEach(el => {
+                const value = parseInt(el.dataset.value);
+                gsap.to(el, {
+                    innerHTML: value,
+                    duration: 2,
+                    ease: 'power2.out',
+                    snap: { innerHTML: 1 },
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%'
+                    }
+                });
+            });
+        }
+
+        // Three.js 3D Background
+        const canvas = document.getElementById('hero-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0xC6A962,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Create torus knot
+        const torusGeometry = new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16);
+        const torusMaterial = new THREE.MeshBasicMaterial({
+            color: 0xC6A962,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.1
+        });
+        const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+        torus.position.set(3, 0, -2);
+        scene.add(torus);
+
+        camera.position.z = 3;
+
+        // Mouse movement effect
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            particlesMesh.rotation.x += 0.0003;
+            particlesMesh.rotation.y += 0.0005;
+
+            torus.rotation.x += 0.003;
+            torus.rotation.y += 0.002;
+
+            // Mouse follow
+            particlesMesh.rotation.x += mouseY * 0.0005;
+            particlesMesh.rotation.y += mouseX * 0.0005;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Video Modal
+        const videoModal = document.getElementById('video-modal');
+        const videoContainer = document.getElementById('video-container');
+        const closeModal = document.getElementById('close-modal');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+
+        document.querySelectorAll('.video-thumb').forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                videoModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        [closeModal, modalBackdrop].forEach(el => {
+            el.addEventListener('click', () => {
+                videoModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            });
+        });
+
+        docu
