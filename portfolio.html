@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Portfolio | CODEXAU Quantum Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="styles-3250.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { 400: '#C6A962', 500: '#B8956F' },
+                        dark: { 900: '#0a0a0a', 800: '#111111', 700: '#1a1a1a', 600: '#222222' }
+                    },
+                    fontFamily: { 'display': ['Playfair Display', 'serif'], 'sans': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #ffffff; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: rgba(198, 169, 98, 0.3); border-radius: 3px; }
+        ::selection { background: rgba(198, 169, 98, 0.3); }
+        
+        .text-gradient { background: linear-gradient(135deg, #C6A962 0%, #E8DCC4 50%, #C6A962 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glow-gold { box-shadow: 0 0 60px rgba(198, 169, 98, 0.15); }
+        
+        .nav-blur { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px); }
+        .nav-link { position: relative; color: rgba(255, 255, 255, 0.6); transition: color 0.3s ease; }
+        .nav-link:hover { color: #ffffff; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: linear-gradient(90deg, #C6A962, transparent); transition: width 0.3s ease; }
+        .nav-link:hover::after { width: 100%; }
+        
+        .btn-primary { background: linear-gradient(135deg, #C6A962 0%, #B8956F 100%); color: #0a0a0a; font-weight: 500; padding: 14px 32px; border-radius: 4px; transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .btn-primary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease; }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(198, 169, 98, 0.3); }
+        
+        .reveal-up { opacity: 0; transform: translateY(60px); }
+        .line-reveal { width: 0; height: 1px; background: linear-gradient(90deg, rgba(198, 169, 98, 0.5), transparent); }
+        
+        .section-padding { padding: 120px 0; }
+        @media (max-width: 768px) { .section-padding { padding: 60px 0; } }
+        
+        .filter-btn { position: relative; padding: 8px 20px; border-radius: 100px; border: 1px solid transparent; transition: all 0.3s ease; color: rgba(255,255,255,0.5); }
+        .filter-btn:hover { color: #fff; }
+        .filter-btn.active { background: rgba(198, 169, 98, 0.1); border-color: rgba(198, 169, 98, 0.3); color: #C6A962; }
+        
+        .project-card { position: relative; border-radius: 16px; overflow: hidden; background: #111; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .project-card:hover { transform: translateY(-8px); }
+        .project-card:hover .project-image img { transform: scale(1.05); }
+        .project-card:hover .project-overlay { opacity: 1; }
+        
+        .project-image { position: relative; aspect-ratio: 16/10; overflow: hidden; }
+        .project-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .project-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.9) 100%); opacity: 0.7; transition: opacity 0.4s ease; }
+        
+        .play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 72px; height: 72px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.4s ease; cursor: pointer; z-index: 10; }
+        .play-button:hover { background: rgba(198, 169, 98, 0.3); border-color: rgba(198, 169, 98, 0.5); transform: translate(-50%, -50%) scale(1.1); }
+        .play-button svg { width: 24px; height: 24px; margin-left: 4px; fill: #ffffff; }
+        
+        .category-badge { display: inline-block; padding: 6px 14px; border-radius: 100px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); font-size: 12px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1em; }
+        
+        .tech-tag { display: inline-block; padding: 4px 12px; border-radius: 4px; background: rgba(255,255,255,0.05); font-size: 12px; color: rgba(255,255,255,0.4); margin-right: 8px; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <!-- Quantum Particle System -->
+    <div id="quantum-particles"></div>
+    
+    <!-- Neural Grid Overlay -->
+    <div class="neural-grid"></div>
+    
+    <!-- Scanlines Effect -->
+    <div class="scanlines"></div>
+    
+    <!-- Plasma Background -->
+    <div class="plasma-bg">
+        <div class="plasma-orb plasma-orb-1"></div>
+        <div class="plasma-orb plasma-orb-2"></div>
+        <div class="plasma-orb plasma-orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="premium-logo-container">
+                        <span class="premium-logo-c">C</span>
+                    </div>
+                    <span class="font-display text-xl tracking-wide">Codexau</span>
+                </a>
+                <div class="hidden lg:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide">Home</a>
+                    <a href="services.html" class="nav-link text-sm tracking-wide">Services</a>
+                    <a href="portfolio.html" class="nav-link text-sm tracking-wide text-white">Work</a>
+                    <a href="about.html" class="nav-link text-sm tracking-wide">About</a>
+                    <a href="contact.html" class="btn-primary text-sm tracking-wide">Get Started</a>
+                </div>
+                <button class="lg:hidden text-white p-2" id="mobile-menu-btn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="lg:hidden hidden bg-dark-900/95 backdrop-blur-xl border-t border-white/5" id="mobile-menu">
+            <div class="px-6 py-8 space-y-6">
+                <a href="index.html" class="block text-lg text-white/80">Home</a>
+                <a href="services.html" class="block text-lg text-white/80">Services</a>
+                <a href="portfolio.html" class="block text-lg text-white">Work</a>
+                <a href="about.html" class="block text-lg text-white/80">About</a>
+                <a href="contact.html" class="btn-primary inline-block text-center w-full">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-40 pb-16 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="max-w-4xl">
+                <div class="reveal-up flex items-center space-x-4 mb-8">
+                    <div class="line-reveal w-12"></div>
+                    <span class="text-sm tracking-[0.2em] text-gold-400 uppercase">Our Work</span>
+                </div>
+                <h1 class="reveal-up font-display text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.1] mb-8">
+                    Projects that
+                    <span class="text-gradient">drive results</span>
+                </h1>
+                <p class="reveal-up text-xl text-white/50 leading-relaxed max-w-2xl">
+                    A curated selection of our work across performance marketing, app development, and web platforms.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter -->
+    <section class="pb-12 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-wrap items-center gap-3">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                <button class="filter-btn" data-filter="app">Mobile Apps</button>
+                <button class="filter-btn" data-filter="web">Web Apps</button>
+                <button class="filter-btn" data-filter="ecommerce">E-Commerce</button>
+                <button class="filter-btn" data-filter="saas">SaaS</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Grid -->
+    <section class="section-padding">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-8" id="portfolio-grid">
+                
+                <!-- Project 1 -->
+                <div class="project-card reveal-up" data-category="ecommerce">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop" alt="Luxe Commerce">
+                        <div class="project-overlay"></div>
+                        <div class="play-button" data-video="luxe" data-src="">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute top-6 left-6">
+                            <span class="category-badge">E-Commerce</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-display text-2xl mb-3">Luxe Commerce</h3>
+                        <p class="text-white/40 leading-relaxed mb-6">Premium Shopify Plus build with server-side tracking and advanced conversion optimization for a luxury fashion brand.</p>
+                        <div class="flex flex-wrap mb-6">
+                            <span class="tech-tag">Shopify Plus</span>
+                            <span class="tech-tag">Server-Side GTM</span>
+                            <span class="tech-tag">Meta CAPI</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                            <span class="text-sm text-white/30">iOS & Android</span>
+                            <div class="flex items-center space-x-4">
+                                <a href="#" class="text-white/40 hover:text-white transition-colors" title="Download">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                </a>
+                                <a href="#" class="text-gold-400 hover:text-gold-500 transition-colors text-sm flex items-center">
+                                    View Case
+                                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card reveal-up" data-category="saas">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop" alt="DataForge Pro">
+                        <div class="project-overlay"></div>
+                        <div class="play-button" data-video="dataforge" data-src="">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute top-6 left-6">
+                            <span class="category-badge">SaaS</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-display text-2xl mb-3">DataForge Pro</h3>
+                        <p class="text-white/40 leading-relaxed mb-6">B2B analytics platform with custom attribution modeling and real-time dashboards for enterprise clients.</p>
+                        <div class="flex flex-wrap mb-6">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                            <span class="text-sm text-white/30">Web App</span>
+                            <a href="#" class="text-gold-400 hover:text-gold-500 transition-colors text-sm flex items-center">
+                                View Case
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card reveal-up" data-category="app">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=500&fit=crop" alt="Apex Invest">
+                        <div class="project-overlay"></div>
+                        <div class="play-button" data-video="apex" data-src="">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute top-6 left-6">
+                            <span class="category-badge">FinTech</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-display text-2xl mb-3">Apex Invest</h3>
+                        <p class="text-white/40 leading-relaxed mb-6">Investment app with real-time tracking infrastructure and comprehensive user acquisition optimization.</p>
+                        <div class="flex flex-wrap mb-6">
+                            <span class="tech-tag">React Native</span>
+                            <span class="tech-tag">Firebase</span>
+                            <span class="tech-tag">AppsFlyer</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                            <span class="text-sm text-white/30">iOS & Android</span>
+                            <div class="flex items-center space-x-4">
+                                <a href="#" class="text-white/40 hover:text-white transition-colors" title="Download">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                </a>
+                                <a href="#" class="text-gold-400 hover:text-gold-500 transition-colors text-sm flex items-center">
+                                    View Case
+                                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card reveal-up" data-category="app">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop" alt="Vitality Hub">
+                        <div class="project-overlay"></div>
+                        <div class="play-button" data-video="vitality" data-src="">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute top-6 left-6">
+                            <span class="category-badge">Health</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-display text-2xl mb-3">Vitality Hub</h3>
+                        <p class="text-white/40 leading-relaxed mb-6">Premium wellness platform with subscription tracking and advanced user engagement features.</p>
+                        <div class="flex flex-wrap mb-6">
+                            <span class="tech-tag">Swift</span>
+                            <span class="tech-tag">Kotlin</span>
+                            <span class="tech-tag">HealthKit</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                            <span class="text-sm text-white/30">iOS & Android</span>
+                            <div class="flex items-center space-x-4">
+                                <a href="#" class="text-white/40 hover:text-white transition-colors" title="Download">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                </a>
+                                <a href="#" class="text-gold-400 hover:text-gold-500 transition-colors text-sm flex items-center">
+                                    View Case
+                                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card reveal-up" data-category="web">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=500&fit=crop" alt="Estate Protocol">
+                        <div class="project-overlay"></div>
+                        <div class="play-button" data-video="estate" data-src="">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute top-6 left-6">
+                            <span class="category-badge">Real Estate</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-display text-2xl mb-3">Estate Protocol</h3>
+                        <p class="text-white/40 leading-relaxed mb-6">Luxury property marketplace with comprehensive lead attribution and CRM integration.</p>
+                        <div class="flex flex-wrap mb-6">
+                            <span class="tech-tag">Next.js</span>
+                            <span class="tech-tag">Prisma</span>
+                            <span class="tech-tag">Salesforce</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                            <span class="text-sm text-white/30">Web Platform</span>
+                            <a href="#" class="text-gold-400 hover:text-gold-500 transition-colors text-sm flex items-center">
+                                View Case
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card reveal-up" data-category="app">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=500&fit=crop" alt="Pulse Fitness">
+                        <div class="project-overlay"></div>
+                        <div class="play-button" data-video="pulse" data-src="">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="absolute top-6 left-6">
+                            <span class="category-badge">Fitness</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-display text-2xl mb-3">Pulse Fitness</h3>
+                        <p class="text-white/40 leading-relaxed mb-6">Connected fitness app with wearable integration and personalized workout recommendations.</p>
+                        <div class="flex flex-wrap mb-6">
+                            <span class="tech-tag">Flutter</span>
+                            <span class="tech-tag">GraphQL</span>
+                            <span class="tech-tag">AWS</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                            <span class="text-sm text-white/30">iOS & Android</span>
+                            <div class="flex items-center space-x-4">
+                                <a href="#" class="text-white/40 hover:text-white transition-colors" title="Download">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                </a>
+                                <a href="#" class="text-gold-400 hover:text-gold-500 transition-colors text-sm flex items-center">
+                                    View Case
+                                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section-padding border-t border-white/5">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="reveal-up glass glow-gold rounded-3xl p-12 md:p-16 text-center">
+                <h2 class="font-display text-4xl md:text-5xl font-medium mb-6">Your project could be next</h2>
+                <p class="text-lg text-white/40 mb-10 max-w-xl mx-auto">Ready to join our portfolio of success stories? Let's discuss how we can bring your vision to life.</p>
+                <a href="contact.html" class="btn-primary inline-flex items-center">
+                    Start Your Project
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="premium-logo-container">
+                        <span class="premium-logo-c">C</span>
+                    </div>
+                    <span class="font-display text-xl tracking-wide">Codexau</span>
+                </a>
+                <div class="flex space-x-8">
+                    <a href="index.html" class="text-white/40 hover:text-white transition-colors text-sm">Home</a>
+                    <a href="services.html" class="text-white/40 hover:text-white transition-colors text-sm">Services</a>
+                    <a href="portfolio.html" class="text-white/40 hover:text-white transition-colors text-sm">Work</a>
+                    <a href="about.html" class="text-white/40 hover:text-white transition-colors text-sm">About</a>
+                    <a href="contact.html" class="text-white/40 hover:text-white transition-colors text-sm">Contact</a>
+                </div>
+                <p class="text-sm text-white/30">&copy; 2024 Codexau</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div class="fixed inset-0 z-[100] hidden" id="video-modal">
+        <div class="absolute inset-0 bg-dark-900/95 backdrop-blur-xl" id="modal-backdrop"></div>
+        <div class="relative h-full flex items-center justify-center p-8">
+            <button class="absolute top-8 right-8 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:border-gold-400 hover:text-gold-400 transition-all" id="close-modal">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="w-full max-w-5xl aspect-video bg-dark-700 rounded-xl overflow-hidden">
+                <div id="video-container" class="w-full h-full flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="w-20 h-20 rounded-full bg-gold-400/10 flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-white/40">Add video URL to data-src attribute</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animations
+        gsap.utils.toArray('.reveal-up').forEach(el => {
+            gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
+        });
+
+        gsap.utils.toArray('.line-reveal').forEach(el => {
+            gsap.to(el, { width: '48px', duration: 1, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
+        });
+
+        // Mobile Menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Filter
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projects = document.querySelectorAll('.project-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                projects.forEach(project => {
+                    if (filter === 'all' || project.dataset.category === filter) {
+                        project.style.display = 'block';
+                        gsap.fromTo(project, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5 });
+                    } else {
+                        project.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Video Modal
+        const videoModal = document.getElementById('video-modal');
+        const closeModal = document.getElementById('close-modal');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+
+        document.querySelectorAll('.play-button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                videoModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        [closeModal, modalBackdrop].forEach(el => {
+            el.addEventListener('click', () => {
+                videoModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                videoModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+    
+    <!-- Quantum Core System -->
+    <script src="quantum-core.js"></script>
+</body>
+</html>

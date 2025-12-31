@@ -1,0 +1,816 @@
+/* ========================================
+   YEAR 3250 FUTURISTIC FRAMEWORK
+   Advanced Quantum UI System
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+    /* Quantum Gold Colors */
+    --quantum-gold: #C6A962;
+    --quantum-gold-light: #E8DCC4;
+    --quantum-gold-dark: #B8956F;
+    --quantum-amber: #D4AF37;
+    --neural-gold: #FFD700;
+    --plasma-bronze: #CD7F32;
+    --energy-gold: #F0E68C;
+    
+    /* Energy Gradients */
+    --energy-flow: linear-gradient(135deg, #C6A962 0%, #E8DCC4 50%, #FFD700 100%);
+    --plasma-field: linear-gradient(45deg, #B8956F, #C6A962, #D4AF37, #E8DCC4);
+    --neural-matrix: radial-gradient(circle, rgba(198,169,98,0.2) 0%, transparent 70%);
+    
+    /* Dark Matter */
+    --void-black: #000000;
+    --deep-space: #0a0a0a;
+    --cosmic-dark: #111111;
+    --nebula-dark: #1a1a1a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--deep-space);
+    color: #ffffff;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* ========================================
+   QUANTUM PARTICLE SYSTEM
+   ======================================== */
+
+#quantum-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--quantum-gold);
+    border-radius: 50%;
+    animation: particle-float 20s infinite;
+    box-shadow: 0 0 10px var(--quantum-gold);
+}
+
+@keyframes particle-float {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+    25% { transform: translate(100px, -100px) scale(1.5); opacity: 0.8; }
+    50% { transform: translate(-50px, -200px) scale(1); opacity: 0.4; }
+    75% { transform: translate(-150px, -100px) scale(2); opacity: 0.6; }
+}
+
+/* ========================================
+   HOLOGRAPHIC EFFECTS
+   ======================================== */
+
+.holographic {
+    position: relative;
+    background: linear-gradient(135deg, 
+        rgba(198,169,98,0.1) 0%, 
+        rgba(232,220,196,0.1) 50%, 
+        rgba(255,215,0,0.1) 100%);
+    border: 1px solid rgba(198,169,98,0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.holographic::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--energy-flow);
+    border-radius: inherit;
+    opacity: 0;
+    filter: blur(10px);
+    transition: opacity 0.4s ease;
+    z-index: -1;
+}
+
+.holographic:hover::before {
+    opacity: 0.5;
+    animation: energy-pulse 2s infinite;
+}
+
+@keyframes energy-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}
+
+/* ========================================
+   NEURAL NETWORK GRID
+   ======================================== */
+
+.neural-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(198,169,98,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(198,169,98,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 1;
+    animation: grid-flow 20s linear infinite;
+}
+
+@keyframes grid-flow {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+/* ========================================
+   QUANTUM GLITCH TEXT
+   ======================================== */
+
+.glitch {
+    position: relative;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--quantum-gold);
+    text-shadow: 
+        0 0 10px var(--quantum-gold),
+        0 0 20px var(--quantum-gold),
+        0 0 40px var(--quantum-gold);
+    animation: glitch-text 5s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    color: var(--quantum-gold-light);
+    animation: glitch-1 2.5s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+
+.glitch::after {
+    color: var(--quantum-amber);
+    animation: glitch-2 2.5s infinite;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch-1 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(2px, -2px); }
+    40% { transform: translate(2px, 2px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(-2px, 2px); }
+}
+
+/* ========================================
+   NEON BUTTONS
+   ======================================== */
+
+.neon-btn {
+    position: relative;
+    padding: 16px 40px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--deep-space);
+    background: var(--energy-flow);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 0 20px rgba(0,243,255,0.5),
+        0 0 40px rgba(181,122,255,0.3),
+        inset 0 0 20px rgba(255,255,255,0.1);
+}
+
+.neon-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.neon-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.neon-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 
+        0 0 40px rgba(198,169,98,0.8),
+        0 0 80px rgba(232,220,196,0.5),
+        0 10px 50px rgba(0,0,0,0.5);
+}
+
+.neon-btn:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* ========================================
+   CYBER CARDS
+   ======================================== */
+
+.cyber-card {
+    position: relative;
+    background: rgba(10,10,10,0.8);
+    border: 2px solid rgba(198,169,98,0.3);
+    border-radius: 16px;
+    padding: 32px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(20px);
+}
+
+.cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(198,169,98,0.2), 
+        transparent);
+    transition: left 0.8s;
+}
+
+.cyber-card:hover::before {
+    left: 100%;
+}
+
+.cyber-card:hover {
+    transform: translateY(-12px) rotateX(5deg);
+    border-color: rgba(198,169,98,0.8);
+    box-shadow: 
+        0 20px 60px rgba(198,169,98,0.3),
+        0 0 40px rgba(232,220,196,0.2),
+        inset 0 0 40px rgba(198,169,98,0.05);
+}
+
+.cyber-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(198,169,98,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse-glow 3s infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ========================================
+   QUANTUM NAVIGATION
+   ======================================== */
+
+.quantum-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(10,10,18,0.6);
+    backdrop-filter: blur(30px);
+    border-bottom: 1px solid rgba(0,243,255,0.2);
+}
+
+.quantum-nav::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--energy-flow);
+    opacity: 0.5;
+}
+
+.nav-link-quantum {
+    position: relative;
+    padding: 10px 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-link-quantum::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--energy-flow);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.nav-link-quantum:hover {
+    color: var(--quantum-gold);
+    text-shadow: 0 0 10px var(--quantum-gold);
+}
+
+.nav-link-quantum:hover::before {
+    width: 100%;
+}
+
+/* ========================================
+   PLASMA BACKGROUNDS
+   ======================================== */
+
+.plasma-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.plasma-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float-orb 20s infinite ease-in-out;
+}
+
+.plasma-orb-1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--quantum-gold) 0%, transparent 70%);
+    top: -300px;
+    right: -300px;
+    animation-delay: 0s;
+}
+
+.plasma-orb-2 {
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, var(--quantum-gold-dark) 0%, transparent 70%);
+    bottom: -400px;
+    left: -400px;
+    animation-delay: -7s;
+}
+
+.plasma-orb-3 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--quantum-amber) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    animation-delay: -14s;
+}
+
+@keyframes float-orb {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(100px, -100px) scale(1.2);
+    }
+    66% {
+        transform: translate(-100px, 100px) scale(0.8);
+    }
+}
+
+/* ========================================
+   HOLOGRAPHIC TEXT
+   ======================================== */
+
+.holo-text {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    background: var(--energy-flow);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 3s ease infinite;
+    text-shadow: 
+        0 0 30px rgba(0,243,255,0.5),
+        0 0 60px rgba(181,122,255,0.3);
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ========================================
+   QUANTUM INPUT FIELDS
+   ======================================== */
+
+.quantum-input {
+    width: 100%;
+    padding: 18px 24px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    color: #ffffff;
+    background: rgba(198,169,98,0.05);
+    border: 2px solid rgba(198,169,98,0.3);
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(10px);
+}
+
+.quantum-input:focus {
+    border-color: var(--quantum-gold);
+    background: rgba(198,169,98,0.1);
+    box-shadow: 
+        0 0 20px rgba(198,169,98,0.3),
+        inset 0 0 20px rgba(198,169,98,0.1);
+}
+
+.quantum-input::placeholder {
+    color: rgba(255,255,255,0.3);
+    font-weight: 300;
+}
+
+/* ========================================
+   LOADING ANIMATIONS
+   ======================================== */
+
+.quantum-loader {
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.quantum-loader::before,
+.quantum-loader::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--quantum-blue);
+}
+
+.quantum-loader::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-top-color: var(--quantum-gold);
+    animation: spin 1s linear infinite;
+}
+
+.quantum-loader::after {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border-top-color: var(--quantum-gold-light);
+    animation: spin 0.7s linear infinite reverse;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   SCAN LINES
+   ======================================== */
+
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,198,169,98,0.03) 0px,
+        transparent 1px,
+        transparent 2px,
+        rgba(198,169,98x,
+        rgba(0,243,255,0.03) 3px
+    );
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.5;
+    animation: scanline-move 10s linear infinite;
+}
+
+@keyframes scanline-move {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+}
+
+/* ========================================
+   3D TRANSFORM EFFECTS
+   ======================================== */
+
+.transform-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.transform-3d:hover {
+    transform: rotateY(5deg) rotateX(5deg);
+}
+
+/* ========================================
+   ELEGANT 3D GOLDEN TEXT
+   ======================================== */
+
+.elegant-3d-text {
+    display: inline-block;
+    position: relative;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transform-style: preserve-3d;
+    animation: elegant-float 6s ease-in-out infinite;
+    background: linear-gradient(135deg, #FFD700 0%, #E8DCC4 25%, #C6A962 50%, #E8DCC4 75%, #FFD700 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: elegant-float 6s ease-in-out infinite, gradient-shift 4s ease infinite;
+    text-shadow: 
+        1px 1px 0px rgba(198,169,98,0.4),
+        2px 2px 0px rgba(198,169,98,0.35),
+        3px 3px 0px rgba(198,169,98,0.3),
+        4px 4px 0px rgba(198,169,98,0.25),
+        5px 5px 0px rgba(198,169,98,0.2),
+        6px 6px 0px rgba(198,169,98,0.15),
+        7px 7px 0px rgba(198,169,98,0.1),
+        8px 8px 0px rgba(198,169,98,0.05),
+        0 0 30px rgba(255,215,0,0.3),
+        0 0 60px rgba(198,169,98,0.2);
+}
+
+.elegant-3d-text::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, rgba(198,169,98,0.3) 0%, rgba(255,215,0,0.2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transform: translateZ(-10px) scale(1.02);
+    filter: blur(2px);
+    opacity: 0.5;
+}
+
+@keyframes elegant-float {
+    0%, 100% {
+        transform: translateY(0px) translateZ(0px) rotateX(0deg);
+    }
+    25% {
+        transform: translateY(-8px) translateZ(5px) rotateX(2deg);
+    }
+    50% {
+        transform: translateY(0px) translateZ(10px) rotateX(0deg);
+    }
+    75% {
+        transform: translateY(-8px) translateZ(5px) rotateX(-2deg);
+    }
+}
+
+/* ========================================
+   BILLION DOLLAR GOLDEN C LOGO
+   ======================================== */
+
+.premium-logo-c {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(145deg, 
+        #FFD700 0%,
+        #FFF4D6 15%,
+        #D4AF37 30%,
+        #E8DCC4 45%,
+        #C6A962 60%,
+        #D4AF37 75%,
+        #FFD700 90%,
+        #FFF9E6 100%
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 1px rgba(198,169,98,0.4))
+            drop-shadow(0 4px 2px rgba(198,169,98,0.3))
+            drop-shadow(0 6px 4px rgba(198,169,98,0.2))
+            drop-shadow(0 10px 8px rgba(198,169,98,0.15))
+            drop-shadow(0 0 20px rgba(255,215,0,0.4))
+            drop-shadow(0 0 40px rgba(198,169,98,0.2));
+    animation: logo-shimmer 3s ease-in-out infinite, logo-glow 2s ease-in-out infinite alternate;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    transform-style: preserve-3d;
+    position: relative;
+    text-shadow: 
+        1px 1px 0 rgba(255,255,255,0.3),
+        -1px -1px 0 rgba(139,69,19,0.2);
+}
+
+.premium-logo-c::before {
+    content: 'C';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(145deg, 
+        rgba(255,215,0,0.3) 0%,
+        rgba(232,220,196,0.2) 50%,
+        rgba(198,169,98,0.3) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(3px);
+    z-index: -1;
+    animation: logo-shimmer 3s ease-in-out infinite reverse;
+}
+
+.premium-logo-container {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.premium-logo-container::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: logo-pulse 2s ease-in-out infinite;
+    z-index: -1;
+}
+
+.premium-logo-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(255,215,0,0.1) 60deg,
+        transparent 120deg,
+        transparent 240deg,
+        rgba(255,215,0,0.1) 300deg,
+        transparent 360deg
+    );
+    border-radius: 50%;
+    animation: logo-rotate 4s linear infinite;
+    z-index: -2;
+}
+
+@keyframes logo-shimmer {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes logo-glow {
+    0% {
+        filter: drop-shadow(0 2px 1px rgba(198,169,98,0.4))
+                drop-shadow(0 4px 2px rgba(198,169,98,0.3))
+                drop-shadow(0 6px 4px rgba(198,169,98,0.2))
+                drop-shadow(0 10px 8px rgba(198,169,98,0.15))
+                drop-shadow(0 0 20px rgba(255,215,0,0.4))
+                drop-shadow(0 0 40px rgba(198,169,98,0.2));
+    }
+    100% {
+        filter: drop-shadow(0 2px 1px rgba(198,169,98,0.5))
+                drop-shadow(0 4px 2px rgba(198,169,98,0.4))
+                drop-shadow(0 6px 4px rgba(198,169,98,0.3))
+                drop-shadow(0 10px 8px rgba(198,169,98,0.2))
+                drop-shadow(0 0 30px rgba(255,215,0,0.6))
+                drop-shadow(0 0 50px rgba(198,169,98,0.3));
+    }
+}
+
+@keyframes logo-pulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes logo-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .neon-btn {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+    
+    .cyber-card {
+        padding: 24px;
+    }
+    
+    .plasma-orb {
+        filter: blur(60px);
+    }
+}
+
+/* ========================================
+   CUSTOM SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--deep-space198,169,98,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--quantum-gold), var(--quantum-gold-dark));
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--quantum-gold-light), var(--quantum-gold));
+}
+
+/* Selection */
+::selection {
+    background: rgba(198,169,98
+    background: rgba(0,243,255,0.3);
+    color: #ffffff;
+}
