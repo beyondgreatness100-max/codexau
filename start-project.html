@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Start Your Project | Codexau</title>
+    <meta name="description" content="Get an instant quote for your web or app development project with Codexau's interactive cost calculator.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="styles-3250.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { 400: '#C6A962', 500: '#B8956F' },
+                        dark: { 900: '#0a0a0a', 800: '#111111', 700: '#1a1a1a', 600: '#222222' }
+                    },
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+                /* Fix for custom checkbox tick visibility */
+                .feature-checkbox-custom {
+                    z-index: 1;
+                    background-clip: padding-box;
+                }
+        /* Premium gold SVG icons — higher quality */
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            background: transparent;
+            transition: transform 180ms ease, box-shadow 180ms ease;
+            will-change: transform, box-shadow;
+        }
+        .premium-badge:hover { transform: translateY(-4px) scale(1.06); box-shadow: 0 20px 50px rgba(198,169,98,0.22); }
+        .premium-badge svg { width: 56px; height: 56px; display: block; }
+        .premium-gold { filter: drop-shadow(0 10px 30px rgba(198,169,98,0.12)); }
+        .premium-gold .gold-stroke { stroke: rgba(10,10,10,0.35); stroke-width: 0.6; }
+        .premium-gold .gloss { opacity: 0.55; mix-blend-mode: overlay; }
+        .premium-gold .gloss, .premium-gold .gold-stroke { pointer-events: none; }
+        /* Slightly increase contrast on dark backgrounds */
+        .premium-gold .gold-fill-dark { fill: #C6A962; }
+
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #ffffff; overflow-x: hidden; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: rgba(198, 169, 98, 0.3); border-radius: 3px; }
+        ::selection { background: rgba(198, 169, 98, 0.3); }
+        
+        .text-gradient { background: linear-gradient(135deg, #C6A962 0%, #E8DCC4 50%, #C6A962 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glow-gold { box-shadow: 0 0 60px rgba(198, 169, 98, 0.15); }
+        
+        .nav-blur { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px); }
+        .nav-link { position: relative; color: rgba(255, 255, 255, 0.6); transition: color 0.3s ease; }
+        .nav-link:hover { color: #ffffff; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: linear-gradient(90deg, #C6A962, transparent); transition: width 0.3s ease; }
+        .nav-link:hover::after { width: 100%; }
+        
+        .btn-primary { background: linear-gradient(135deg, #C6A962 0%, #B8956F 100%); color: #0a0a0a; font-weight: 500; padding: 14px 32px; border-radius: 4px; transition: all 0.4s ease; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(198, 169, 98, 0.3); }
+        
+        .project-type-card { cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .project-type-card:hover { transform: translateY(-8px); border-color: rgba(198, 169, 98, 0.3); }
+        .project-type-card.active { border-color: rgba(198, 169, 98, 0.5); background: rgba(198, 169, 98, 0.05); }
+        
+        /* Enhanced custom checkbox styles */
+        .feature-checkbox {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .checkmark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            background: transparent;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+            color: transparent; /* hide tick by default */
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1;
+            user-select: none;
+            z-index: 3;
+        }
+        /* Support both adjacent and general sibling selectors to be robust */
+        .feature-checkbox:checked + .checkmark,
+        .feature-checkbox:checked ~ .checkmark {
+            background: #C6A962;
+            border-color: #C6A962;
+            color: #0a0a0a !important; /* reveal tick */
+        }
+        .feature-checkbox:disabled + .checkmark,
+        .feature-checkbox:disabled ~ .checkmark {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .locked-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 100px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.4); }
+        
+        .price-summary { position: sticky; top: 100px; }
+        
+        .counter-input { display: flex; align-items: center; gap: 12px; }
+        .counter-btn { width: 36px; height: 36px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #C6A962; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .counter-btn:hover { background: rgba(198, 169, 98, 0.1); border-color: rgba(198, 169, 98, 0.3); }
+        .counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .counter-value { font-size: 18px; font-weight: 600; color: white; min-width: 40px; text-align: center; }
+        
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; }
+        .glitch:hover::before { animation: glitch-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; color: #C6A962; z-index: -1; }
+        .glitch:hover::after { animation: glitch-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite; color: #E8DCC4; z-index: -1; }
+        @keyframes glitch-1 { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+        @keyframes glitch-2 { 0% { transform: translate(0); } 20% { transform: translate(2px, -2px); } 40% { transform: translate(2px, 2px); } 60% { transform: translate(-2px, -2px); } 80% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
+    </style>
+</head>
+<body>
+    <!-- Quantum Particle System -->
+    <div id="quantum-particles"></div>
+    
+    <!-- Neural Grid Overlay -->
+    <div class="neural-grid"></div>
+    
+    <!-- Scanlines Effect -->
+    <div class="scanlines"></div>
+    
+    <!-- Plasma Background -->
+    <div class="plasma-bg">
+        <div class="plasma-orb plasma-orb-1"></div>
+        <div class="plasma-orb plasma-orb-2"></div>
+        <div class="plasma-orb plasma-orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 nav-blur border-b border-white/5 z-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="premium-logo-container">
+                        <span class="premium-logo-c">C</span>
+                    </div>
+                    <span class="font-display text-xl tracking-wide glitch" data-text="Codexau">Codexau</span>
+                </a>
+                <div class="hidden lg:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide">Home</a>
+                    <a href="services.html" class="nav-link text-sm tracking-wide">Services</a>
+                    <a href="portfolio.html" class="nav-link text-sm tracking-wide">Work</a>
+                    <a href="about.html" class="nav-link text-sm tracking-wide">About</a>
+                    <a href="contact.html" class="btn-primary text-sm tracking-wide">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-32 pb-20 min-h-screen">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="font-display text-4xl md:text-6xl lg:text-7xl font-medium leading-tight mb-6">
+                    Start Your <span class="text-gradient">Project</span>
+                </h1>
+                <p class="text-lg text-white/50 max-w-2xl mx-auto">
+                    Get an instant quote for your project. Choose your platform and customize the features you need.
+                </p>
+            </div>
+
+            <!-- Project Type Selection -->
+            <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
+                <div class="project-type-card glass p-8 rounded-2xl border-2 border-white/5 active" id="web-card" onclick="switchProjectType('web')">
+                    <div class="text-4xl mb-4">
+                        <span class="premium-badge premium-gold" aria-hidden="true">
+                            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="goldGradientGlobe" x1="0" x2="1" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#FFF7E0" />
+                                        <stop offset="50%" stop-color="#F6E1A2" />
+                                        <stop offset="100%" stop-color="#C6A962" />
+                                    </linearGradient>
+                                    <linearGradient id="glossGradientGlobe" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                                    </linearGradient>
+                                </defs>
+                                <!-- Main globe -->
+                                <circle cx="32" cy="32" r="26" fill="url(#goldGradientGlobe)" class="gold-fill-dark" stroke="rgba(10,10,10,0.18)" stroke-width="1"/>
+                                <!-- Latitudes / longitudes -->
+                                <g fill="none" stroke="rgba(10,10,10,0.18)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 32c6-10 30-10 36 0" />
+                                    <path d="M14 40c6-6 30-6 36 0" />
+                                    <path d="M32 6c0 0 0 52 0 52" />
+                                    <path d="M22 8c4 8 4 44 0 48" />
+                                    <path d="M42 8c-4 8-4 44 0 48" />
+                                </g>
+                                <!-- Gloss -->
+                                <path d="M14 14c6 2 10 8 12 12 5 8 10 10 18 6" fill="url(#glossGradientGlobe)" class="gloss" />
+                            </svg>
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-display mb-2">Web Development</h3>
+                    <p class="text-white/40 mb-4">Responsive websites and web applications</p>
+                    <div class="text-sm text-gold-400">Starting from $750</div>
+                </div>
+                <div class="project-type-card glass p-8 rounded-2xl border-2 border-white/5" id="app-card" onclick="switchProjectType('app')">
+                    <div class="text-4xl mb-4">
+                        <span class="premium-badge premium-gold" aria-hidden="true">
+                            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="goldGradientPhone" x1="0" x2="1" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#FFF7E0" />
+                                        <stop offset="50%" stop-color="#F6E1A2" />
+                                        <stop offset="100%" stop-color="#C6A962" />
+                                    </linearGradient>
+                                    <linearGradient id="glossGradientPhone" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                                    </linearGradient>
+                                </defs>
+                                <!-- Phone body -->
+                                <rect x="18" y="6" width="28" height="52" rx="5" ry="5" fill="url(#goldGradientPhone)" stroke="rgba(10,10,10,0.18)" stroke-width="1"/>
+                                <!-- Screen -->
+                                <rect x="22" y="10" width="20" height="36" rx="3" ry="3" fill="#0a0a0a" opacity="0.95" />
+                                <!-- Gloss -->
+                                <rect x="22" y="10" width="20" height="18" rx="3" ry="3" fill="url(#glossGradientPhone)" class="gloss" />
+                                <!-- Home dot -->
+                                <circle cx="32" cy="50" r="1.6" fill="#0a0a0a" />
+                            </svg>
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-display mb-2">App Development</h3>
+                    <p class="text-white/40 mb-4">Native iOS and Android applications</p>
+                    <div class="text-sm text-gold-400">Starting from $2,400</div>
+                </div>
+            </div>
+
+            <!-- Calculator Section -->
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Features List -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Essential Features -->
+                    <div class="glass glow-gold rounded-2xl p-8">
+                        <h3 class="text-2xl font-display mb-6">Essential Features</h3>
+                        
+                        <!-- Web Essential -->
+                        <div id="web-essentials">
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <div class="font-medium text-white">Number of Pages</div>
+                                        <div class="text-sm text-white/40">Minimum 5 pages required</div>
+                                    </div>
+                                    <div class="text-gold-400 font-semibold">$150 /page</div>
+                                </div>
+                                <div class="counter-input">
+                                    <button class="counter-btn" onclick="updatePages(-1)">−</button>
+                                    <span class="counter-value" id="page-count">5</span>
+                                    <button class="counter-btn" onclick="updatePages(1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- App Essential -->
+                        <div id="app-essentials" style="display: none;">
+                            <div class="mb-6">
+                                <label class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 mb-3">
+                                    <div>
+                                        <div class="flex items-center gap-3">
+                                            <input type="checkbox" class="feature-checkbox" checked disabled id="ios-dev">
+                                            <span class="checkmark">✓</span>
+                                            <span class="font-medium">iOS Development</span>
+                                        </div>
+                                        <div class="text-sm text-white/40 ml-8">Required for Apple App Store</div>
+                                    </div>
+                                    <span class="text-gold-400 font-semibold">$700</span>
+                                </label>
+                                <label class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 mb-4">
+                                    <div>
+                                        <div class="flex items-center gap-3">
+                                            <input type="checkbox" class="feature-checkbox" checked disabled id="android-dev">
+                                            <span class="checkmark">✓</span>
+                                            <span class="font-medium">Android Development</span>
+                                        </div>
+                                        <div class="text-sm text-white/40 ml-8">Required for Google Play Store</div>
+                                    </div>
+                                    <span class="text-gold-400 font-semibold">$700</span>
+                                </label>
+                            </div>
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <div class="font-medium text-white">Number of Screens</div>
+                                        <div class="text-sm text-white/40">Minimum 5 screens required</div>
+                                    </div>
+                                    <div class="text-gold-400 font-semibold">$200 /screen</div>
+                                </div>
+                                <div class="counter-input">
+                                    <button class="counter-btn" onclick="updatePages(-1)">−</button>
+                                    <span class="counter-value" id="screen-count">5</span>
+                                    <button class="counter-btn" onclick="updatePages(1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Features -->
+                    <div class="glass glow-gold rounded-2xl p-8">
+                        <h3 class="text-2xl font-display mb-6">Additional Features</h3>
+                        <div class="space-y-3" id="features-list">
+                            <!-- Features will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Premium Features (Locked) -->
+                    <div class="glass rounded-2xl p-8 border border-white/5">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-display">Premium Features</h3>
+                            <span class="locked-badge">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                                Contact for Quote
+                            </span>
+                        </div>
+                        <div class="space-y-3 opacity-50">
+                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="feature-checkbox" disabled id="ecommerce-adv">
+                                    <span class="checkmark">✓</span>
+                                    <span>E-commerce Integration (Advanced)</span>
+                                </div>
+                                <span class="locked-badge">Premium</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="feature-checkbox" disabled id="blockchain-int">
+                                    <span class="checkmark">✓</span>
+                                    <span>Blockchain Integration</span>
+                                </div>
+                                <span class="locked-badge">Premium</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="feature-checkbox" disabled id="custom-api">
+                                    <span class="checkmark">✓</span>
+                                    <span>Custom API Development</span> 
+                                </div>
+                                <span class="locked-badge">Premium</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="feature-checkbox" disabled id="adv-analytics">
+                                    <span class="checkmark">✓</span>
+                                    <span>Advanced Analytics Dashboard</span>
+                                </div>
+                                <span class="locked-badge">Premium</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Summary (Sticky) -->
+                <div class="lg:col-span-1">
+                    <div class="price-summary glass glow-gold rounded-2xl p-8">
+                        <h3 class="text-xl font-display mb-6">Price Summary</h3>
+                        
+                        <div class="space-y-4 mb-6 pb-6 border-b border-white/10" id="price-breakdown">
+                            <!-- Price items will be added here -->
+                        </div>
+                        
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="text-lg font-medium">Total Estimate</span>
+                            <span class="text-3xl font-display text-gradient" id="total-price">$750</span>
+                        </div>
+                        
+                        <div class="text-xs text-white/30 mb-6">
+                            * Final price may vary based on project complexity and specific requirements
+                        </div>
+                        
+                        <a href="contact.html" class="btn-primary w-full text-center block">
+                            Request Detailed Quote
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="premium-logo-container">
+                        <span class="premium-logo-c">C</span>
+                    </div>
+                    <span class="font-display text-xl tracking-wide glitch" data-text="Codexau">Codexau</span>
+                </a>
+                <p class="text-sm text-white/30">&copy; 2026 Codexau</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="quantum-core.js" defer></script>
+    <script>
+        const webFeatures = [
+            { id: 'translation', name: 'Multi-language Translation', price: 500, description: 'Support for multiple languages' },
+            { id: 'ai-chat', name: 'AI Customer Service (ChatGPT)', price: 500, description: 'Basic AI chatbot integration' },
+            { id: 'ai-enterprise', name: 'AI Customer Service (Enterprise)', price: 1500, description: 'Advanced AI for high-traffic sites', dependency: 'ai-chat' },
+            { id: 'chat', name: 'Live Chat & Messaging', price: 500, description: 'Real-time customer communication' },
+            { id: 'database', name: 'Custom Database Integration', price: 500, description: 'Backend database setup' },
+            { id: 'auth', name: 'User Authentication System', price: 400, description: 'Login, registration, password reset' },
+            { id: 'payment', name: 'Payment Gateway Integration', price: 600, description: 'Stripe, PayPal, etc.' },
+            { id: 'ecommerce-basic', name: 'E-commerce (Basic)', price: 800, description: 'Product catalog, cart, checkout' },
+            { id: 'seo', name: 'SEO Optimization', price: 350, description: 'Search engine optimization' },
+            { id: 'analytics', name: 'Analytics Integration', price: 250, description: 'Google Analytics, tracking' },
+            { id: 'blog', name: 'Blog/CMS System', price: 450, description: 'Content management system' },
+            { id: 'contact-form', name: 'Advanced Contact Forms', price: 200, description: 'Custom form builder' },
+            { id: 'newsletter', name: 'Newsletter Integration', price: 300, description: 'Email marketing integration' },
+            { id: 'social', name: 'Social Media Integration', price: 250, description: 'Social login and sharing' },
+        ];
+
+        const appFeatures = [
+            { id: 'translation', name: 'Multi-language Translation', price: 700, description: 'Support for multiple languages' },
+            { id: 'ai-chat', name: 'AI Customer Service (ChatGPT)', price: 700, description: 'Basic AI chatbot integration' },
+            { id: 'ai-enterprise', name: 'AI Customer Service (Enterprise)', price: 2000, description: 'Advanced AI for high-traffic apps', dependency: 'ai-chat' },
+            { id: 'chat', name: 'In-App Chat & Messaging', price: 800, description: 'Real-time messaging system' },
+            { id: 'database', name: 'Cloud Database Integration', price: 700, description: 'Firebase/AWS backend' },
+            { id: 'auth', name: 'User Authentication System', price: 600, description: 'Login, biometric auth' },
+            { id: 'payment', name: 'Payment Gateway Integration', price: 900, description: 'In-app purchases, subscriptions' },
+            { id: 'ecommerce-basic', name: 'E-commerce (Basic)', price: 1200, description: 'Product catalog, cart, checkout' },
+            { id: 'push', name: 'Push Notifications', price: 400, description: 'Real-time notifications' },
+            { id: 'maps', name: 'Maps & Location Services', price: 500, description: 'GPS, maps integration' },
+            { id: 'camera', name: 'Camera & Media Integration', price: 450, description: 'Photo/video capture' },
+            { id: 'offline', name: 'Offline Mode', price: 600, description: 'Work without internet' },
+            { id: 'analytics', name: 'Analytics Integration', price: 350, description: 'Firebase Analytics, tracking' },
+            { id: 'social', name: 'Social Media Integration', price: 400, description: 'Social login and sharing' },
+        ];
+
+        let currentType = 'web';
+        let pageCount = 5;
+        let selectedFeatures = new Set();
+
+        function switchProjectType(type) {
+            currentType = type;
+            pageCount = 5;
+            selectedFeatures.clear();
+            
+            // Update card styles
+            document.getElementById('web-card').classList.toggle('active', type === 'web');
+            document.getElementById('app-card').classList.toggle('active', type === 'app');
+            
+            // Toggle essentials
+            document.getElementById('web-essentials').style.display = type === 'web' ? 'block' : 'none';
+            document.getElementById('app-essentials').style.display = type === 'app' ? 'block' : 'none';
+            
+            // Update page/screen count
+            document.getElementById('page-count').textContent = pageCount;
+            if (type === 'app') {
+                document.getElementById('screen-count').textContent = pageCount;
+            }
+            
+            // Render features
+            renderFeatures();
+            updatePrice();
+        }
+
+        function renderFeatures() {
+            const features = currentType === 'web' ? webFeatures : appFeatures;
+            const container = document.getElementById('features-list');
+            
+            container.innerHTML = features.map(feature => `
+                <label class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-all" ${feature.dependency && !selectedFeatures.has(feature.dependency) ? 'style=\"opacity: 0.5;\"' : ''}>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" class="feature-checkbox" id="feature-${feature.id}" onchange="toggleFeature('${feature.id}')" ${feature.dependency && !selectedFeatures.has(feature.dependency) ? 'disabled' : ''} ${selectedFeatures.has(feature.id) ? 'checked' : ''}>
+                            <span class="checkmark">✓</span>
+                            <span class="font-medium">${feature.name}</span>
+                        </div>
+                        <div class="text-sm text-white/40 ml-8">${feature.description}</div>
+                    </div>
+                    <span class="text-gold-400 font-semibold">$${feature.price.toLocaleString()}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleFeature(id) {
+            if (selectedFeatures.has(id)) {
+                selectedFeatures.delete(id);
+                // Also deselect dependent features
+                const features = currentType === 'web' ? webFeatures : appFeatures;
+                features.forEach(f => {
+                    if (f.dependency === id) {
+                        selectedFeatures.delete(f.id);
+                        const checkbox = document.getElementById(`feature-${f.id}`);
+                        if (checkbox) checkbox.checked = false;
+                    }
+                });
+            } else {
+                selectedFeatures.add(id);
+            }
+            renderFeatures();
+            updatePrice();
+        }
+
+        function updatePages(delta) {
+            const newCount = pageCount + delta;
+            if (newCount >= 5) {
+                pageCount = newCount;
+                document.getElementById('page-count').textContent = pageCount;
+                if (currentType === 'app') {
+                    document.getElementById('screen-count').textContent = pageCount;
+                }
+                updatePrice();
+            }
+        }
+
+        function updatePrice() {
+            const features = currentType === 'web' ? webFeatures : appFeatures;
+            const breakdown = document.getElementById('price-breakdown');
+            const pricePerPage = currentType === 'web' ? 150 : 200;
+            
+            let items = [];
+            let total = 0;
+            
+            // Essential costs
+            if (currentType === 'web') {
+                const pagesCost = pageCount * pricePerPage;
+                items.push({ name: `${pageCount} Pages`, price: pagesCost });
+                total += pagesCost;
+            } else {
+                items.push({ name: 'iOS Development', price: 700 });
+                items.push({ name: 'Android Development', price: 700 });
+                const screensCost = pageCount * pricePerPage;
+                items.push({ name: `${pageCount} Screens`, price: screensCost });
+                total += 1400 + screensCost;
+            }
+            
+            // Selected features
+            selectedFeatures.forEach(id => {
+                const feature = features.find(f => f.id === id);
+                if (feature) {
+                    items.push({ name: feature.name, price: feature.price });
+                    total += feature.price;
+                }
+            });
+            
+            // Render breakdown
+            breakdown.innerHTML = items.map(item => `
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-white/60">${item.name}</span>
+                    <span class="text-white font-medium">$${item.price.toLocaleString()}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('total-price').textContent = `$${total.toLocaleString()}`;
+        }
+
+        // Initialize
+        renderFeatures();
+        updatePrice();
+    </script>
+</body>
+</html>
