@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Contact | CODEXAU Quantum Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="styles-3250.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { gold: { 400: '#C6A962', 500: '#B8956F' }, dark: { 900: '#0a0a0a', 800: '#111111', 700: '#1a1a1a', 600: '#222222' } },
+                    fontFamily: { 'display': ['Playfair Display', 'serif'], 'sans': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #ffffff; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: rgba(198, 169, 98, 0.3); border-radius: 3px; }
+        ::selection { background: rgba(198, 169, 98, 0.3); }
+        .text-gradient { background: linear-gradient(135deg, #C6A962 0%, #E8DCC4 50%, #C6A962 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glow-gold { box-shadow: 0 0 60px rgba(198, 169, 98, 0.15); }
+        .nav-blur { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px); }
+        .nav-link { position: relative; color: rgba(255, 255, 255, 0.6); transition: color 0.3s ease; }
+        .nav-link:hover { color: #ffffff; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: linear-gradient(90deg, #C6A962, transparent); transition: width 0.3s ease; }
+        .nav-link:hover::after { width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, #C6A962 0%, #B8956F 100%); color: #0a0a0a; font-weight: 500; padding: 16px 32px; border-radius: 4px; transition: all 0.4s ease; position: relative; overflow: hidden; border: none; cursor: pointer; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(198, 169, 98, 0.3); }
+        .reveal-up { opacity: 0; transform: translateY(60px); }
+        .line-reveal { width: 0; height: 1px; background: linear-gradient(90deg, rgba(198, 169, 98, 0.5), transparent); }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(198, 169, 98, 0.5);
+            box-shadow: 0 0 20px rgba(198, 169, 98, 0.1);
+        }
+        .form-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+        
+        select.form-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.4)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
+            cursor: pointer;
+        }
+        select.form-input option { background: #111; }
+        
+        textarea.form-input { resize: none; min-height: 160px; }
+        
+        .contact-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        .contact-card:hover { border-color: rgba(198, 169, 98, 0.2); }
+        
+        .faq-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover { border-color: rgba(198, 169, 98, 0.2); }
+        .faq-question {
+            padding: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .faq-answer.active { max-height: 300px; }
+        .faq-answer-inner { padding: 0 24px 24px; }
+        
+        /* Glitch Effect */
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; }
+        .glitch:hover::before { animation: glitch-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; color: #C6A962; z-index: -1; }
+        .glitch:hover::after { animation: glitch-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite; color: #E8DCC4; z-index: -1; }
+        @keyframes glitch-1 { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+        @keyframes glitch-2 { 0% { transform: translate(0); } 20% { transform: translate(2px, -2px); } 40% { transform: translate(2px, 2px); } 60% { transform: translate(-2px, -2px); } 80% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
+    </style>
+</head>
+<body>
+    <!-- Quantum Particle System -->
+    <div id="quantum-particles"></div>
+    
+    <!-- Neural Grid Overlay -->
+    <div class="neural-grid"></div>
+    
+    <!-- Scanlines Effect -->
+    <div class="scanlines"></div>
+    
+    <!-- Plasma Background -->
+    <div class="plasma-bg">
+        <div class="plasma-orb plasma-orb-1"></div>
+        <div class="plasma-orb plasma-orb-2"></div>
+        <div class="plasma-orb plasma-orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 nav-blur border-b border-white/5" style="z-index: 999999999 !important; pointer-events: auto !important; position: fixed;">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="premium-logo-container">
+                        <span class="premium-logo-c">C</span>
+                    </div>
+                    <span class="font-display text-xl tracking-wide glitch" data-text="Codexau">Codexau</span>
+                </a>
+                <div class="hidden lg:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide">Home</a>
+                    <a href="services.html" class="nav-link text-sm tracking-wide">Services</a>
+                    <a href="portfolio.html" class="nav-link text-sm tracking-wide">Work</a>
+                    <a href="about.html" class="nav-link text-sm tracking-wide">About</a>
+                    <a href="contact.html" class="btn-primary text-sm tracking-wide">Get Started</a>
+                </div>
+                <button class="lg:hidden text-white p-2 relative" id="mobile-menu-btn" type="button" aria-label="Toggle menu" style="z-index: 99999999; position: relative; pointer-events: auto !important; touch-action: manipulation; cursor: pointer; -webkit-tap-highlight-color: rgba(198,169,98,0.3);" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="pointer-events: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="lg:hidden hidden bg-dark-900/95 backdrop-blur-xl border-t border-white/5 relative" id="mobile-menu" style="z-index: 99999998; position: relative; pointer-events: auto;">
+            <div class="px-6 py-8 space-y-6">
+                <a href="index.html" class="block text-lg text-white/80">Home</a>
+                <a href="services.html" class="block text-lg text-white/80">Services</a>
+                <a href="portfolio.html" class="block text-lg text-white/80">Work</a>
+                <a href="about.html" class="block text-lg text-white/80">About</a>
+                <a href="contact.html" class="btn-primary inline-block text-center w-full">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-40 pb-16 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <div class="reveal-up flex items-center space-x-4 mb-8">
+                    <div class="line-reveal w-12"></div>
+                    <span class="text-sm tracking-[0.2em] text-gold-400 uppercase">Get in Touch</span>
+                </div>
+                <h1 class="reveal-up font-display text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.1] mb-8">
+                    Let's build something
+                    <span class="text-gradient">extraordinary</span>
+                </h1>
+                <p class="reveal-up text-xl text-white/50 leading-relaxed">
+                    Every great project starts with a conversation. Tell us about your vision and we'll show you how we can bring it to life.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-5 gap-16 lg:gap-20">
+                
+                <!-- Form -->
+                <div class="lg:col-span-3 reveal-up">
+                    <form id="contact-form" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm text-white/50 mb-2">Your Name</label>
+                                <input type="text" name="name" required class="form-input" placeholder="John Smith">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-white/50 mb-2">Email Address</label>
+                                <input type="email" name="email" required class="form-input" placeholder="john@company.com">
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm text-white/50 mb-2">Company</label>
+                                <input type="text" name="company" class="form-input" placeholder="Your Company">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-white/50 mb-2">Project Budget</label>
+                                <select name="budget" class="form-input">
+                                    <option value="">Select a range</option>
+                                    <option value="10-25k">$10,000 - $25,000</option>
+                                    <option value="25-50k">$25,000 - $50,000</option>
+                                    <option value="50-100k">$50,000 - $100,000</option>
+                                    <option value="100k+">$100,000+</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-white/50 mb-2">Service Interest</label>
+                            <select name="service" class="form-input">
+                                <option value="">Select a service</option>
+                                <option value="performance">Performance Marketing</option>
+                                <option value="app">App Development</option>
+                                <option value="web">Web Development</option>
+                                <option value="strategy">Strategy & Consulting</option>
+                                <option value="multiple">Multiple Services</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-white/50 mb-2">Project Details</label>
+                            <textarea name="message" required class="form-input" placeholder="Tell us about your project, goals, and timeline..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full md:w-auto">
+                            Send Message
+                            <svg class="inline-block w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="lg:col-span-2 reveal-up space-y-8">
+                    <div class="contact-card">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-gold-400/10 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-white/40 mb-1">Email</div>
+                                <a href="/cdn-cgi/l/email-protection#0a626f6666654a69656e6f726b7f24696567" class="text-gold-400 hover:text-gold-500 transition-colors"><span class="__cf_email__" data-cfemail="5e363b3232311e3d313a3b263f2b703d3133">[email&#160;protected]</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-gold-400/10 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-white/40 mb-1">Location</div>
+                                <div>Dubai, UAE</div>
+                                <div class="text-sm text-white/40">Working globally</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-gold-400/10 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-white/40 mb-1">Response Time</div>
+                                <div>Within 24 hours</div>
+                                <div class="text-sm text-white/40">Usually faster</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass glow-gold rounded-xl p-6 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            <span class="text-sm text-white/60">NDA Protected Discussions</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
+                            <span class="text-sm text-white/60">No Obligation Consultation</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span class="text-sm text-white/60">Dedicated Project Team</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-24 border-t border-white/5">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="reveal-up font-display text-4xl font-medium">Frequently Asked <span class="text-gradient">Questions</span></h2>
+            </div>
+
+            <div class="space-y-4 reveal-up">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-display text-lg">What's your typical project timeline?</span>
+                        <svg class="w-5 h-5 text-white/40 faq-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner text-white/50 leading-relaxed">
+                            Timelines vary based on scope. A focused landing page might take 2-4 weeks, while a full app build typically runs 3-6 months. We'll provide a detailed timeline during our initial consultation.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-display text-lg">Do you work with startups or established businesses?</span>
+                        <svg class="w-5 h-5 text-white/40 faq-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner text-white/50 leading-relaxed">
+                            Both. We partner with ambitious startups looking to build their digital foundation and established businesses seeking to optimize their digital presence.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-display text-lg">How does your pricing work?</span>
+                        <svg class="w-5 h-5 text-white/40 faq-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner text-white/50 leading-relaxed">
+                            We offer both project-based and retainer arrangements depending on your needs. All projects begin with a detailed scope and fixed quote—no surprise fees.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-display text-lg">What makes Codexau different?</span>
+                        <svg class="w-5 h-5 text-white/40 faq-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner text-white/50 leading-relaxed">
+                            We combine technical excellence with business acumen. We don't just build beautiful products, we build products that perform and drive measurable business results.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="premium-logo-container">
+                        <span class="premium-logo-c">C</span>
+                    </div>
+                    <span class="font-display text-xl tracking-wide">Codexau</span>
+                </a>
+                <div class="flex space-x-8">
+                    <a href="index.html" class="text-white/40 hover:text-white transition-colors text-sm">Home</a>
+                    <a href="services.html" class="text-white/40 hover:text-white transition-colors text-sm">Services</a>
+                    <a href="portfolio.html" class="text-white/40 hover:text-white transition-colors text-sm">Work</a>
+                    <a href="about.html" class="text-white/40 hover:text-white transition-colors text-sm">About</a>
+                    <a href="contact.html" class="text-white/40 hover:text-white transition-colors text-sm">Contact</a>
+                </div>
+                <p class="text-sm text-white/30">&copy; 2024 Codexau</p>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        gsap.registerPlugin(ScrollTrigger);
+        
+        gsap.utils.toArray('.reveal-up').forEach(el => {
+            gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
+        });
+        
+        gsap.utils.toArray('.line-reveal').forEach(el => {
+            gsap.to(el, { width: '48px', duration: 1, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
+        });
+
+        // Mobile Menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const icon = question.querySelector('.faq-icon');
+                
+                // Close all others
+                document.querySelectorAll('.faq-answer').forEach(a => {
+                    if (a !== answer) a.classList.remove('active');
+                });
+                document.querySelectorAll('.faq-icon').forEach(i => {
+                    if (i !== icon) i.style.transform = 'rotate(0deg)';
+                });
+                
+                // Toggle current
+                answer.classList.toggle('active');
+                icon.style.transform = answer.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+            });
+        });
+
+        // Form submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = '<span class="flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Sending...</span>';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Message Sent!</span>';
+                setTimeout(() => {
+                    btn.innerHTML = 'Send Message <svg class="inline-block w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 2
+    
+    <!-- Quantum Core System -->
+    <script src="quantum-core.js"></script>
+</body>
+</html>
